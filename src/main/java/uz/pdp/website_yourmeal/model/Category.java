@@ -1,7 +1,6 @@
 package uz.pdp.website_yourmeal.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Category extends BaseEntity{
-    private String iconId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fileId", referencedColumnName = "id")
+    private File icon;
     private String title;
 }

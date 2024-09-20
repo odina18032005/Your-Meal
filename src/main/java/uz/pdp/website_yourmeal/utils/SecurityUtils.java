@@ -2,10 +2,12 @@ package uz.pdp.website_yourmeal.utils;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import uz.pdp.website_yourmeal.model.User;
 
 import java.util.Random;
 
+@Component
 public class SecurityUtils {
     public String getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

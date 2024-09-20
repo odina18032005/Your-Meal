@@ -7,6 +7,6 @@ import uz.pdp.website_yourmeal.model.User;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, String> {
-    Optional<User> findFirstByPhoneAndPassword(String username, String password);
-    Optional<User> findFirstByPhone(String username);
+    Optional<User> findFirstByPhoneAndPassword(String phone, String password);
+    Optional<User> findFirstByPhone(String phone);
 }

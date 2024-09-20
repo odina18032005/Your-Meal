@@ -1,7 +1,6 @@
 package uz.pdp.website_yourmeal.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,12 +12,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Basket extends BaseEntity{
-    private String userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private User user;
     private Integer total_price;
 
     @Builder
-    public Basket(String userId, Integer total_price) {
-        this.userId = userId;
+    public Basket(User user, Integer total_price) {
+        this.user = user;
         this.total_price = total_price;
     }
 }

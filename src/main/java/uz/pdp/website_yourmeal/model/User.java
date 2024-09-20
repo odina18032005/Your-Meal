@@ -1,5 +1,6 @@
 package uz.pdp.website_yourmeal.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Table;
@@ -16,7 +17,7 @@ public class User extends BaseEntity{
     private String lastName;
     private String phone;
     private String password;
-    @GeneratedValue(generator = "USER")
+    @Column(columnDefinition ="varchar default 'USER'" )
     private String role;
 
     @Builder

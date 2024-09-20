@@ -1,9 +1,6 @@
 package uz.pdp.website_yourmeal.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,16 +12,21 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class BasketItem extends BaseEntity{
-    private String basketId;
-    private String productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "basketId", referencedColumnName = "id")
+    private Basket basket;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "productId", referencedColumnName = "id")
+    private Product product;
     private Integer quantity;
     private Integer price;
     private Integer total;
 
     @Builder
-    public BasketItem(String basketId, String productId, Integer quantity, Integer price, Integer total) {
-        this.basketId = basketId;
-        this.productId = productId;
+
+    public BasketItem(Basket basket, Product product, Integer quantity, Integer price, Integer total) {
+        this.basket = basket;
+        this.product = product;
         this.quantity = quantity;
         this.price = price;
         this.total = total;
