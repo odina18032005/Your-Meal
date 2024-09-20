@@ -17,15 +17,15 @@ public class User extends BaseEntity{
     private String lastName;
     private String phone;
     private String password;
-    @Column(columnDefinition ="varchar default 'USER'" )
-    private String role;
+   // @Column(columnDefinition ="varchar default 'USER'" )
+//    private String role;
 
     @Builder
-    public User(String firstName, String lastName, String phone, String password, String role) {
+    public User(String firstName, String lastName, String phone, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.password = password;
-        this.role = role;
+//        this.role = role;
     }
 }

@@ -10,6 +10,7 @@ import uz.pdp.website_yourmeal.repository.ProductRepository;
 import java.util.List;
 
 @RestController
+@RequestMapping("/product")
 public class ProductController {
 
     private final ProductRepository productRepository;
@@ -22,10 +23,10 @@ public class ProductController {
     public ResponseEntity<Product> create(@RequestBody ProductDto productDto){
         Product build = Product.builder()
                 .title(productDto.title())
-                .desc(productDto.desc())
+                .description(productDto.desc())
                 .price(productDto.price())
                 .calories(productDto.calories())
-                .categoryId(productDto.categoryId())
+//                .category(productDto.categoryId())
                 .weight(productDto.weight())
                 .compound(productDto.compound()).build();
         Product save = productRepository.save(build);

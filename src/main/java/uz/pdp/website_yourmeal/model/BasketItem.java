@@ -23,7 +23,6 @@ public class BasketItem extends BaseEntity{
     private Integer total;
 
     @Builder
-
     public BasketItem(Basket basket, Product product, Integer quantity, Integer price, Integer total) {
         this.basket = basket;
         this.product = product;

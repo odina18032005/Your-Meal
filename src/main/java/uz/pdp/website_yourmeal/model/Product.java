@@ -12,6 +12,7 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.Type;
 import uz.pdp.website_yourmeal.converter.ConverterCompout;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Product extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fileId", referencedColumnName = "id")
     private File image;
-    private String desc;
+    private String description;
     private Integer weight;
     private Integer price;
     @Convert(converter = ConverterCompout.class)
@@ -35,12 +36,12 @@ public class Product extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryId", referencedColumnName = "id")
     private Category category;
-
-    @Builder
-    public Product(String title, File image, String desc, Integer weight, Integer price, List<String> compound, Integer calories, Category category) {
+@Builder
+    public Product(String id, Integer createBy, LocalDateTime createdDate, LocalDateTime updatedDate, Integer updateBy, String title, File image, String description, Integer weight, Integer price, List<String> compound, Integer calories, Category category) {
+        super(id, createBy, createdDate, updatedDate, updateBy);
         this.title = title;
         this.image = image;
-        this.desc = desc;
+        this.description = description;
         this.weight = weight;
         this.price = price;
         this.compound = compound;

@@ -29,6 +29,7 @@ public class SecurityConfig {
             "/auth/signup",
             "/error",
             "/api-docs",
+            "/product/**",
             "/swagger-ui.html",
             "/swagger-ui/**"
     };

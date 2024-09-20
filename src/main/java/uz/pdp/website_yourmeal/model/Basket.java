@@ -16,10 +16,12 @@ public class Basket extends BaseEntity{
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;
     private Integer total_price;
+    private boolean isActive;
 
     @Builder
-    public Basket(User user, Integer total_price) {
+    public Basket(User user, Integer total_price, boolean isActive) {
         this.user = user;
         this.total_price = total_price;
+        this.isActive = isActive;
     }
 }
