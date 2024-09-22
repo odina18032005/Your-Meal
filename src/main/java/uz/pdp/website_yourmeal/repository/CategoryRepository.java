@@ -6,7 +6,7 @@ import uz.pdp.website_yourmeal.model.Category;
 
 import java.util.Optional;
 
-public interface CategoryRepository extends JpaRepository<Category, Integer> {
+public interface CategoryRepository extends JpaRepository<Category, String> {
 
     Optional<Category> findById(Integer id);
 }

@@ -1,8 +1,11 @@
 package uz.pdp.website_yourmeal.controller;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.website_yourmeal.dto.ProductDto;
+import uz.pdp.website_yourmeal.mapper.ProductMapper;
 import uz.pdp.website_yourmeal.model.Product;
 import uz.pdp.website_yourmeal.repository.ProductRepository;
 
@@ -19,17 +22,17 @@ public class ProductController {
         this.productRepository = productRepository;
     }
 
-    @PostMapping("/createProduct")
+    @PostMapping("/create")
     public ResponseEntity<Product> create(@RequestBody ProductDto productDto){
-        Product build = Product.builder()
-                .title(productDto.title())
-                .description(productDto.desc())
-                .price(productDto.price())
-                .calories(productDto.calories())
-//                .category(productDto.categoryId())
-                .weight(productDto.weight())
-                .compound(productDto.compound()).build();
-        Product save = productRepository.save(build);
+        Product entity = Mappers.getMapper(ProductMapper.class).toEntity(productDto);
+        Product save = productRepository.save(entity);
+        return ResponseEntity.ok(save);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<Product> update(@RequestBody ProductDto productDto){
+        Product entity = Mappers.getMapper(ProductMapper.class).toEntity(productDto);
+        Product save = productRepository.save(entity);
         return ResponseEntity.ok(save);
     }
 

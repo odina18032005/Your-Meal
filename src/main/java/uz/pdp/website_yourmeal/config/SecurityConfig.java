@@ -18,6 +18,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import uz.pdp.website_yourmeal.dto.ErrorBodyDto;
 
 import java.io.PrintWriter;
@@ -68,6 +69,14 @@ public class SecurityConfig {
         http.sessionManagement(session->{
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         });
+
+        http.logout( logout -> logout
+                .logoutUrl("/auth/logout")
+                .deleteCookies("JSESSIONID")
+                .clearAuthentication(true)
+                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout","POST"))
+                .permitAll()
+        );
         return http.build();
     }
 

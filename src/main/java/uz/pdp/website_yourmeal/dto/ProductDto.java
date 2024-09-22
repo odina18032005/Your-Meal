@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public record ProductDto (
+        String id,
         String title,
         MultipartFile image,
         String desc,
