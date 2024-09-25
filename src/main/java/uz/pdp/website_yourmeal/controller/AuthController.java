@@ -30,8 +30,8 @@ public class AuthController {
     }
 
 
-    @PostMapping("/signup")
-    public User signup(@RequestBody UserDto userDto){
+    @PostMapping("/register")
+    public User register(@RequestBody UserDto userDto){
         String encode = passwordEncoder.encode(userDto.password());
         User build = User.builder().firstName(userDto.firstName()).lastName(userDto.lastName()).phone(userDto.phone()).password(encode).build();
         return userRepository.save(build);

@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BasketItem extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "basketId", referencedColumnName = "id")
+    @JoinColumn(name = "basket_id", referencedColumnName = "id")
     private Basket basket;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productId", referencedColumnName = "id")
@@ -23,11 +23,15 @@ public class BasketItem extends BaseEntity{
     private Integer total;
 
     @Builder
-    public BasketItem(Basket basket, Product product, Integer quantity, Integer price, Integer total) {
-        this.basket = basket;
+    public BasketItem(Product product, Integer quantity) {
         this.product = product;
         this.quantity = quantity;
-        this.price = price;
-        this.total = total;
+        this.price = product.getPrice();
+        this.total = product.getPrice() * quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+        this.price = product.getPrice() * quantity;
     }
 }

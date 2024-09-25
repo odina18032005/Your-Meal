@@ -1,15 +1,23 @@
 package uz.pdp.website_yourmeal.config;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,15 +33,17 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
     private final String[] WHITE_LIST = new String[]{
-            "/auth/signup",
+            "/auth/**",
             "/error",
+//            "/product/**",
             "/api-docs",
-            "/product/**",
             "/swagger-ui.html",
             "/swagger-ui/**"
     };
+
     private final ObjectMapper objectMapper;
     private final UserDetailsService userDetailsService;
 
@@ -51,25 +61,23 @@ public class SecurityConfig {
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.jwtRequestFilter = jwtRequestFilter;
     }
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
+
         http.authorizeHttpRequests((auth)->{
-            auth
-                    .requestMatchers(WHITE_LIST).permitAll()
-                    .requestMatchers("/**").authenticated();
-        });
+                    auth
+                            .requestMatchers(WHITE_LIST).permitAll()
+                            .requestMatchers("/**").authenticated();
+                }
+        );
         http.userDetailsService(userDetailsService);
         http.exceptionHandling((handler)->{
             handler.accessDeniedHandler(accessDeniedHandler);
             handler.authenticationEntryPoint(authenticationEntryPoint);
         });
-
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-        http.sessionManagement(session->{
-            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        });
-
         http.logout( logout -> logout
                 .logoutUrl("/auth/logout")
                 .deleteCookies("JSESSIONID")
@@ -77,8 +85,17 @@ public class SecurityConfig {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout","POST"))
                 .permitAll()
         );
+
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.sessionManagement(session->{
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        });
+
         return http.build();
     }
+
+
 
     @Bean
     public AccessDeniedHandler accessDeniedHandler(){
@@ -124,5 +141,19 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @Value("${aws.access.key}")
+    private String ACCESS_KEY;
+    @Value("${aws.secret.key}")
+    private String SECRET_KEY;
+
+    @Bean
+    public AmazonS3 amazonS3(){
+        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(ACCESS_KEY,SECRET_KEY);
+        return AmazonS3ClientBuilder.standard()
+                .withRegion(Regions.AP_NORTHEAST_1)
+                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
+                .build();
     }
 }
