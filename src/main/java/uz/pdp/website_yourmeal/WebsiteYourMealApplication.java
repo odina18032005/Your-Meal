@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import uz.pdp.website_yourmeal.utils.SecurityUtils;
 
@@ -14,6 +15,7 @@ import javax.sql.DataSource;
 import java.util.Optional;
 
 @SpringBootApplication
+@EnableJpaAuditing
 public class WebsiteYourMealApplication {
 
     private final SecurityUtils securityUtils;

@@ -1,9 +1,9 @@
 package uz.pdp.website_yourmeal.dto;
 
-import org.mapstruct.ap.internal.util.IgnoreJRERequirement;
-import org.springframework.web.multipart.MultipartFile;
+import uz.pdp.website_yourmeal.model.File;
 
 public record CategoryDto (
+        File icon,
         String title
 ){
 }

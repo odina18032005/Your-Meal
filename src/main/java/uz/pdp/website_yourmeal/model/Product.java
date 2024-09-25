@@ -6,15 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.AttributeAccessor;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.Type;
 import uz.pdp.website_yourmeal.converter.ConverterCompout;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -36,7 +30,7 @@ public class Product extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryId", referencedColumnName = "id")
     private Category category;
-@Builder
+    @Builder
     public Product(String id, Integer createBy, LocalDateTime createdDate, LocalDateTime updatedDate, Integer updateBy, String title, File image, String description, Integer weight, Integer price, List<String> compound, Integer calories, Category category) {
         super(id, createBy, createdDate, updatedDate, updateBy);
         this.title = title;

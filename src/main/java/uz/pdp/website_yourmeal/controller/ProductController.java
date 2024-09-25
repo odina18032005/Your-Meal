@@ -8,8 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import uz.pdp.website_yourmeal.dto.ProductDto;
 //import uz.pdp.website_yourmeal.mapper.ProductMapper;
+import uz.pdp.website_yourmeal.mapper.CategoryMapper;
 import uz.pdp.website_yourmeal.mapper.ProductMapper;
+import uz.pdp.website_yourmeal.model.Category;
+import uz.pdp.website_yourmeal.model.File;
 import uz.pdp.website_yourmeal.model.Product;
+import uz.pdp.website_yourmeal.repository.FileRepository;
 import uz.pdp.website_yourmeal.repository.ProductRepository;
 import uz.pdp.website_yourmeal.service.S3StorageService;
 
@@ -22,16 +26,19 @@ public class ProductController {
 
     private final ProductRepository productRepository;
     private final S3StorageService s3StorageService;
+    private final FileRepository fileRepository;
 
-    public ProductController(ProductRepository productRepository, S3StorageService s3StorageService) {
+    public ProductController(ProductRepository productRepository, S3StorageService s3StorageService, FileRepository fileRepository) {
         this.productRepository = productRepository;
         this.s3StorageService = s3StorageService;
+        this.fileRepository = fileRepository;
     }
 
     @PostMapping(value = "/create", consumes = {"application/json", MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Product> create(@RequestBody ProductDto productDto, @RequestParam("image") MultipartFile image){
-        s3StorageService.uploadToPublic(image);
         Product entity = Mappers.getMapper(ProductMapper.class).toEntity(productDto);
+        File file = fileRepository.save(File.builder().originalFilename(s3StorageService.uploadToPublic(image)).build());
+        entity.setImage(file);
         Product save = productRepository.save(entity);
         return ResponseEntity.ok(save);
     }
@@ -39,6 +46,8 @@ public class ProductController {
     @PostMapping(value = "/update", consumes = {"application/json", MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Product> update(@RequestBody ProductDto productDto, @RequestParam("image") MultipartFile image){
         Product entity = Mappers.getMapper(ProductMapper.class).toEntity(productDto);
+        File file = fileRepository.save(File.builder().originalFilename(s3StorageService.uploadToPublic(image)).build());
+        entity.setImage(file);
         Product save = productRepository.save(entity);
         return ResponseEntity.ok(save);
     }

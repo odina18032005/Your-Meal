@@ -27,10 +27,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import uz.pdp.website_yourmeal.dto.ErrorBodyDto;
 
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -38,7 +42,8 @@ public class SecurityConfig {
     private final String[] WHITE_LIST = new String[]{
             "/auth/**",
             "/error",
-//            "/product/**",
+            "/product/**",
+            "/category/**",
             "/api-docs",
             "/swagger-ui.html",
             "/swagger-ui/**"
@@ -64,9 +69,9 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, @Qualifier("urlBasedCorsConfig") CorsConfigurationSource configurationSource) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
-
+        http.cors(cors->cors.configurationSource(configurationSource));
         http.authorizeHttpRequests((auth)->{
                     auth
                             .requestMatchers(WHITE_LIST).permitAll()
@@ -95,6 +100,18 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean("urlBasedCorsConfig")
+    public CorsConfigurationSource configurationSource(){
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 
     @Bean

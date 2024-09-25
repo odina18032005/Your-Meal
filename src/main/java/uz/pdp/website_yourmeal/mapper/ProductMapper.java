@@ -7,8 +7,6 @@ import uz.pdp.website_yourmeal.model.Product;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
-    @Mapping(target = "image", ignore = true)
     ProductDto toDto(Product product);
-    @Mapping(target = "image", ignore = true)
     Product toEntity(ProductDto productDto);
 }

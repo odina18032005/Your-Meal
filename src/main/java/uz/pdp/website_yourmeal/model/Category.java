@@ -1,6 +1,7 @@
 package uz.pdp.website_yourmeal.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,4 +16,10 @@ public class Category extends BaseEntity{
     @JoinColumn(name = "fileId", referencedColumnName = "id")
     private File icon;
     private String title;
+
+    @Builder
+    public Category(File icon, String title) {
+        this.icon = icon;
+        this.title = title;
+    }
 }

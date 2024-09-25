@@ -8,21 +8,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "file")
+@Table(name = "orders")
 @Getter
 @Setter
 @NoArgsConstructor
 public class File extends BaseEntity{
-    private String name;
+    private final String url = "https://yourmealg40bucket.s3.ap-northeast-1.amazonaws.com/public/";
     private String originalFilename;
-    private String uuid;
-    private String contentType;
 
     @Builder
-    public File(String name, String originalFilename, String uuid, String contentType) {
-        this.name = name;
+    public File(String originalFilename) {
         this.originalFilename = originalFilename;
-        this.uuid = uuid;
-        this.contentType = contentType;
     }
 }
