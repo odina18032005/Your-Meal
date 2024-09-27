@@ -18,9 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Product extends BaseEntity{
     private String title;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fileId", referencedColumnName = "id")
-    private File image;
+    private String image;
     private String description;
     private Integer weight;
     private Integer price;
@@ -31,7 +29,7 @@ public class Product extends BaseEntity{
     @JoinColumn(name = "categoryId", referencedColumnName = "id")
     private Category category;
     @Builder
-    public Product(String id, Integer createBy, LocalDateTime createdDate, LocalDateTime updatedDate, Integer updateBy, String title, File image, String description, Integer weight, Integer price, List<String> compound, Integer calories, Category category) {
+    public Product(String id, Integer createBy, LocalDateTime createdDate, LocalDateTime updatedDate, Integer updateBy, String title, String image, String description, Integer weight, Integer price, List<String> compound, Integer calories, Category category) {
         super(id, createBy, createdDate, updatedDate, updateBy);
         this.title = title;
         this.image = image;

@@ -8,9 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uz.pdp.website_yourmeal.dto.CategoryDto;
 import uz.pdp.website_yourmeal.mapper.CategoryMapper;
 import uz.pdp.website_yourmeal.model.Category;
-import uz.pdp.website_yourmeal.model.File;
 import uz.pdp.website_yourmeal.repository.CategoryRepository;
-import uz.pdp.website_yourmeal.repository.FileRepository;
 import uz.pdp.website_yourmeal.service.S3StorageService;
 
 import java.util.List;
@@ -19,33 +17,25 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
+    private final String URL_ICON = "https://yourmealg40bucket.s3.ap-northeast-1.amazonaws.com/public/";
     private final CategoryRepository categoryRepository;
     private final S3StorageService s3StorageService;
-    private final FileRepository fileRepository;
 
-    public CategoryController(CategoryRepository categoryRepository, S3StorageService s3StorageService, FileRepository fileRepository) {
+    public CategoryController(CategoryRepository categoryRepository, S3StorageService s3StorageService) {
         this.categoryRepository = categoryRepository;
         this.s3StorageService = s3StorageService;
-        this.fileRepository = fileRepository;
     }
 
-    @PostMapping(value = "/create", consumes = {"application/json", MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Category> create(CategoryDto categoryDto, @RequestParam("icon") MultipartFile icon){
+    @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Category> create(CategoryDto categoryDto, @RequestParam("icon") MultipartFile icon) {
         Category entity = Mappers.getMapper(CategoryMapper.class).toEntity(categoryDto);
-        File file = fileRepository.save(File.builder().originalFilename(s3StorageService.uploadToPublic(icon)).build());
-        entity.setIcon(file);
-        Category save = categoryRepository.save(entity);
-        return ResponseEntity.ok(save);
+        String upload = s3StorageService.uploadToPublic(icon);
+        String url = URL_ICON + upload;
+        entity.setIcon(url);
+        Category savedCategory = categoryRepository.save(entity);
+        return ResponseEntity.ok(savedCategory);
     }
 
-    @PostMapping(value = "/update", consumes = {"application/json", MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Category> update(CategoryDto categoryDto, @RequestParam("icon") MultipartFile icon){
-        Category entity = Mappers.getMapper(CategoryMapper.class).toEntity(categoryDto);
-        File file = fileRepository.save(File.builder().originalFilename(s3StorageService.uploadToPublic(icon)).build());
-        entity.setIcon(file);
-        Category save = categoryRepository.save(entity);
-        return ResponseEntity.ok(save);
-    }
 
     @GetMapping("/getById/{categoryId}")
     public ResponseEntity<Category> getById(@PathVariable("categoryId") String id){

@@ -12,13 +12,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Category extends BaseEntity{
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fileId", referencedColumnName = "id")
-    private File icon;
+    private String icon;
     private String title;
 
     @Builder
-    public Category(File icon, String title) {
+    public Category(String icon, String title) {
         this.icon = icon;
         this.title = title;
     }
